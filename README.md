@@ -1,6 +1,4 @@
 # Information
-A funny mod for FiveM.
-
 Be Jesus for the afternoon.
 
 # Requirements
