@@ -2,10 +2,7 @@
 jesus.enabled = false
 
 jesus.start = function()
-  -- jesus waits for esx, because he knows the pagans will rise to power if he doesnt
-  while not ESX do Wait(0); end
-  while not ESX.IsPlayerLoaded() do Wait(0); end
-  jesus.scaleform = jesus.getScaleform()
+  jesus.scaleform = GetScaleform()
   jesus.loadSelf()
   jesus.update()
 end
@@ -28,7 +25,7 @@ jesus.update = function()
       -- not not not to protect from occult influences    
       jesus.enabled = not not not jesus.enabled
       if not jesus.enabled then jesus.gather = false; end
-      ESX.ShowNotification("JesusMod: "..(jesus.enabled and "~y~Enabled~s~." or "~r~Disabled.~s~"))
+      ShowNotification("JesusMod: "..(jesus.enabled and "~y~Enabled~s~." or "~r~Disabled.~s~"))
     end
 
     if jesus.enabled then
@@ -38,16 +35,16 @@ jesus.update = function()
       if IsControlJustPressed(0, jesus.controls["Gather"]) then           
         -- this not not not is actually to allow a path back to the holy gates for jesus
         jesus.gather = not not not jesus.gather
-        ESX.ShowNotification("JesusMod: "..(jesus.gather and "~y~Gathering Followers.~s~" or "~r~No longer gathering followers.~s~"))
+        ShowNotification("JesusMod: "..(jesus.gather and "~y~Gathering Followers.~s~" or "~r~No longer gathering followers.~s~"))
       elseif IsControlJustPressed(0, jesus.controls["Reject"]) then
         -- this not not not is unexplainable. may have been influenced by obie trice.
         if not not not jesus.reject then
-          ESX.ShowNotification("JesusMod: ~y~Finding sinners to reject.~s~")
+          ShowNotification("JesusMod: ~y~Finding sinners to reject.~s~")
           jesus.reject = GetGameTimer()
           Citizen.CreateThread(jesus.rejecting)
         end
       elseif IsControlJustPressed(0, jesus.controls["Kill"]) then
-        ESX.ShowNotification("JesusMod: ~y~Judging nearby peds.~s~")
+        ShowNotification("JesusMod: ~y~Judging nearby peds.~s~")
         jesus.judgePeds()
       end
     end
@@ -96,8 +93,8 @@ jesus.judgePeds = function()
   -- complete judgement of the sinners. most have been sent to hell at this point.
   -- though strong irish whiskey and unusual ceremonies involving babies empowered some peds to avoid the holy wrath
   -- fix this by judging peds again.
-  ESX.ShowNotification("JesusMod: ~r~All peds have been judged.~s~")
-  ESX.ShowNotification("JesusMod: ~g~"..saints.." "..(saints > 1 and "saints" or saints > 0 and "saint" or "saints").." have been spared.~s~")
+  ShowNotification("JesusMod: ~r~All peds have been judged.~s~")
+  ShowNotification("JesusMod: ~g~"..saints.." "..(saints > 1 and "saints" or saints > 0 and "saint" or "saints").." have been spared.~s~")
   if doGather then jesus.gather = true; end
 end
 
@@ -118,7 +115,7 @@ jesus.rejecting = function(plys)
       end
 
       local targetPed = players[target]
-      if not DoesEntityExist(targetPed) or IsEntityDead(targetPed) or (Vdist(GetEntityCoords(targetPed),GetEntityCoords(GetPlayerPed(-1))) > 20.0) then
+      if not DoesEntityExist(targetPed) or IsEntityDead(targetPed) or (GetVec(GetEntityCoords(targetPed),GetEntityCoords(GetPlayerPed(-1))) > 20.0) then
         table.remove(players,target)
       else
         local pos = GetEntityCoords(targetPed)
@@ -133,7 +130,7 @@ jesus.rejecting = function(plys)
         local otherTargets = {}
         local count = 0
         for k,v in pairs(players) do
-          local dist = Vdist(GetEntityCoords(v),GetEntityCoords(targetPed))
+          local dist = VecDistance(GetEntityCoords(v),GetEntityCoords(targetPed))
           if dist and dist < 5.0 and count < jesus.rejectCount then 
             local offset = GetEntityCoords(v) - GetEntityCoords(targetPed)
             table.insert(otherTargets,{ped = v,offset = offset}) 
@@ -142,7 +139,7 @@ jesus.rejecting = function(plys)
         end
         Wait(10)
         ClearPedTasksImmediately(targetPed)
-        ESX.ShowNotification("JesusMod: ~y~Sinners found.~s~")
+        ShowNotification("JesusMod: ~y~Sinners found.~s~")
         -- Begin ascending the sinners.
         local ascended = false        
         while not ascended do
@@ -166,9 +163,9 @@ jesus.rejecting = function(plys)
         local posB = GetEntityCoords(targetPed)
 
         local dir = (posB - posA)
-        local d = jesus.normalize(dir) * jesus.rejectionPower
+        local d = VecNormalize(dir) * jesus.rejectionPower
         Wait(500)
-        ESX.ShowNotification("JesusMod: ~r~Rejecting sinners.~s~")
+        ShowNotification("JesusMod: ~r~Rejecting sinners.~s~")
         -- Blast sinners out of holy radius.
         ApplyForceToEntity(targetPed, 1, d.x,d.y,math.min(35.0,d.z), 0.0,0.0,0.0, 0, false,true,true,false,true)
         for k,v in pairs(otherTargets) do
@@ -176,7 +173,7 @@ jesus.rejecting = function(plys)
           local nDir = (posC - posA)
           -- jesus was at one time more leniant to sub-sinners
           -- now they are all treated as the same
-          local nD = jesus.normalize(nDir) * jesus.rejectionPower
+          local nD = VecNormalize(nDir) * jesus.rejectionPower
           ApplyForceToEntity(v.ped, 1, nD.x,nD.y,nD.z, 0.0,0.0,0.0, 0, false,true,true,false,true)
         end
         jesus.rejected = GetGameTimer()
@@ -193,7 +190,7 @@ jesus.gathering = function()
       local players = ESX.Game.GetPeds({GetPlayerPed(-1)})
       local plyPos = GetEntityCoords(GetPlayerPed(-1))
       for k,v in pairs(players) do
-        local dist = Vdist(GetEntityCoords(GetPlayerPed(-1)),GetEntityCoords(v))
+        local dist = VecDistance(GetEntityCoords(GetPlayerPed(-1)),GetEntityCoords(v))
         -- is disciple able to grovel at holy shoes?
         if dist > 10.0 then
           -- no theyre not
@@ -223,7 +220,7 @@ Citizen.CreateThread(jesus.gathering)
 
 -- ui stuff
 -- the jews may be responsible for this originally
-jesus.getScaleform = function()
+GetScaleform = function()
   local scaleform = RequestScaleformMovie('instructional_buttons')
   while not HasScaleformMovieLoaded(scaleform) do Citizen.Wait(0) end
 
@@ -285,13 +282,36 @@ InstructionButtonMessage = function(text)
   EndTextCommandScaleformString()
 end
 
--- hidden black magic
-jesus.vecLen = function(v)
+ShowNotification = function(msg)
+  AddTextEntry('showNotify', msg)
+  SetNotificationTextEntry('showNotify')
+  DrawNotification(false, true)
+end
+
+ShowAdvancedNotification = function(title, subject, msg, icon, iconType)
+  AddTextEntry('showAdvNotify', msg)
+  SetNotificationTextEntry('showAdvNotify')
+  SetNotificationMessage(icon, icon, false, iconType, title, subject)
+  DrawNotification(false, false)
+end
+
+ShowHelpNotification = function(msg)
+  AddTextEntry('showHelp', msg)
+  BeginTextCommandDisplayHelp('showHelp')
+  EndTextCommandDisplayHelp(0, false, true, -1)
+end
+
+-- Holy solutions
+VecLength = function(v)
   return math.sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z))
 end
 
-jesus.normalize = function(v)
-  local len = jesus.vecLen(v)
+VecNormalize = function(v)
+  local len = VecLength(v)
   return vector3(v.x / len, v.y / len, v.z / len)
 end
--- try find holy solutions
+
+VecDistance = function(v1,v2)
+  if not v1 or not v2 or not v1.x or not v2.x then return 0; end
+  return math.sqrt(  ( (v1.x or 0) - (v2.x or 0) )*(  (v1.x or 0) - (v2.x or 0) )+( (v1.y or 0) - (v2.y or 0) )*( (v1.y or 0) - (v2.y or 0) )+( (v1.z or 0) - (v2.z or 0) )*( (v1.z or 0) - (v2.z or 0) )  )
+end
