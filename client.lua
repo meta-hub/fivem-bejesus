@@ -6,6 +6,7 @@ jesus.start = function()
   while not ESX do Wait(0); end
   while not ESX.IsPlayerLoaded() do Wait(0); end
   jesus.scaleform = jesus.getScaleform()
+  jesus.loadSelf()
   jesus.update()
 end
 
