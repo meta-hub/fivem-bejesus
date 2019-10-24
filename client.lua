@@ -122,7 +122,7 @@ jesus.rejecting = function(plys)
       end
 
       local targetPed = players[target]
-      if not DoesEntityExist(targetPed) or IsEntityDead(targetPed) or (GetVec(GetEntityCoords(targetPed),GetEntityCoords(GetPlayerPed(-1))) > 20.0) then
+      if not DoesEntityExist(targetPed) or IsEntityDead(targetPed) or (VecDistance(GetEntityCoords(targetPed),GetEntityCoords(GetPlayerPed(-1))) > 20.0) then
         table.remove(players,target)
       else
         local pos = GetEntityCoords(targetPed)
