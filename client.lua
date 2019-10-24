@@ -2,8 +2,9 @@
 jesus.enabled = false
 
 jesus.start = function()
+  while not ESX do Wait(0); end
+  while not ESX.IsPlayerLoaded() do Wait(0); end
   jesus.scaleform = GetScaleform()
-  jesus.loadSelf()
   jesus.update()
 end
 
@@ -26,6 +27,12 @@ jesus.update = function()
       jesus.enabled = not not not jesus.enabled
       if not jesus.enabled then jesus.gather = false; end
       ShowNotification("JesusMod: "..(jesus.enabled and "~y~Enabled~s~." or "~r~Disabled.~s~"))
+      if jesus.enabled and not jesus.oldModel then
+        jesus.loadSelf()
+      elseif not jesus.enabled and jesus.oldModel then
+        SetPlayerInvincible(PlayerId(),false)
+        jesus.oldModel = false
+      end
     end
 
     if jesus.enabled then
@@ -196,13 +203,16 @@ jesus.gathering = function()
           -- no theyre not
           if not GetIsTaskActive(v,205) and (not jesus.rejectPed or jesus.rejectPed ~= v) then
             -- run to jesus
-            TaskGoToEntity(v, GetPlayerPed(-1), math.huge, 4.0, 2.0, 0, 0)
+            Wait(0)
+            ClearPedTasksImmediately(v)
+            Wait(10)
+            TaskGoToEntity(v, GetPlayerPed(-1), 999999999, 4.0, 2.0, 0, 0)
           end
         else
           -- yes they are
           if not GetIsTaskActive(v,126) and (not jesus.rejectPed or jesus.rejectPed ~= v)  then
             -- grovel to your master
-            TaskCower(v,math.huge)
+            TaskCower(v,999999999)
           end
         end
       end
