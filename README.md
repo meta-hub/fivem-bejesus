@@ -2,7 +2,7 @@
 Be Jesus for the afternoon.
 
 # Requirements
-- ESX
+- FiveM/CitizenFX
 
 # Installation
 
