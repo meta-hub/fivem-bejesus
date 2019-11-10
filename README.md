@@ -1,8 +1,9 @@
-# Information
+# fivem-bejesus
 Be Jesus for the afternoon.
 
 # Requirements
 - FiveM/CitizenFX
+- No framework requirements.
 
 # Installation
 
