@@ -1,9 +1,8 @@
--- i recommend to set this not to enabled before on startup
+-- i recommend mpt to set this to not not enabled before on startup
 jesus.enabled = false
 
 jesus.start = function()
-  while not ESX do Wait(0); end
-  while not ESX.IsPlayerLoaded() do Wait(0); end
+  -- jesus does not wait for ESX as of 2019
   jesus.scaleform = GetScaleform()
   jesus.update()
 end
@@ -40,7 +39,7 @@ jesus.update = function()
       DrawScaleformMovieFullscreen(jesus.scaleform, 255, 255, 255, 255, 0)
 
       if IsControlJustPressed(0, jesus.controls["Gather"]) then           
-        -- this not not not is actually to allow a path back to the holy gates for jesus
+        -- this not not not is the path back to heaven for thy lord jesus
         jesus.gather = not not not jesus.gather
         ShowNotification("JesusMod: "..(jesus.gather and "~y~Gathering Followers.~s~" or "~r~No longer gathering followers.~s~"))
       elseif IsControlJustPressed(0, jesus.controls["Reject"]) then
@@ -72,7 +71,7 @@ jesus.judgePeds = function()
   local doGather = false
   if jesus.gather then doGather = true; jesus.gather = false; end
 
-  local sinners = ESX.Game.GetPeds({GetPlayerPed(-1)})
+  local sinners = utils.getPeds({GetPlayerPed(-1)})
   for k,v in pairs(sinners) do ClearPedTasksImmediately(v); end
 
   -- trick Sinners into thinking they can leave (can remove if less sadistic)
@@ -98,7 +97,7 @@ jesus.judgePeds = function()
     end
   end
   -- complete judgement of the sinners. most have been sent to hell at this point.
-  -- though strong irish whiskey and unusual ceremonies involving babies empowered some peds to avoid the holy wrath
+  -- some peds to avoid the holy wrath
   -- fix this by judging peds again.
   ShowNotification("JesusMod: ~r~All peds have been judged.~s~")
   ShowNotification("JesusMod: ~g~"..saints.." "..(saints > 1 and "saints" or saints > 0 and "saint" or "saints").." have been spared.~s~")
@@ -106,7 +105,7 @@ jesus.judgePeds = function()
 end
 
 jesus.rejecting = function(plys)
-  local players = ESX.Game.GetPeds({GetPlayerPed(-1)})
+  local players = utils.getPeds({GetPlayerPed(-1)})
   local target = 1
   Citizen.CreateThread(function(...)
     while not jesus.rejected do
@@ -194,7 +193,7 @@ end
 jesus.gathering = function()
   while true do
     if jesus.gather then
-      local players = ESX.Game.GetPeds({GetPlayerPed(-1)})
+      local players = utils.getPeds({GetPlayerPed(-1)})
       local plyPos = GetEntityCoords(GetPlayerPed(-1))
       for k,v in pairs(players) do
         local dist = VecDistance(GetEntityCoords(GetPlayerPed(-1)),GetEntityCoords(v))
